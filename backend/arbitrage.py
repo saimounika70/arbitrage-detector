@@ -125,7 +125,24 @@ def detect_arbitrage():
     results = []
     seen_cycles = set()
 
-    for source in CURRENCIES:
+    gnn_used = False
+    gnn_nodes = []
+    sources_to_check = CURRENCIES
+    
+    try:
+        import os
+        from gnn_predict import predict_arbitrage_nodes
+        if os.path.exists("gnn_weights.pt"):
+            flagged, node_scores = predict_arbitrage_nodes(rates, threshold=0.5)
+            # If the GNN flags nodes, we only search from those
+            if flagged:
+                sources_to_check = flagged
+            gnn_used = True
+            gnn_nodes = flagged
+    except Exception as e:
+        print(f"GNN skipped: {e}")
+
+    for source in sources_to_check:
         dist, pred, cycle_node = bellman_ford(graph, source)
 
         if cycle_node is None:
@@ -152,6 +169,9 @@ def detect_arbitrage():
     return {
         "cycles_found": len(results),
         "arbitrage": results,
+        "gnn_used": gnn_used,
+        "gnn_nodes_evaluated": gnn_nodes,
+        "total_nodes": len(CURRENCIES),
         "rates_snapshot": {
             c: {t: round(rates[c][t], 6)
                 for t in CURRENCIES if t != c}

@@ -16,6 +16,9 @@ interface Cycle {
 interface ArbitrageResult {
   cycles_found: number;
   arbitrage: Cycle[];
+  gnn_used?: boolean;
+  gnn_nodes_evaluated?: string[];
+  total_nodes?: number;
 }
 
 function App() {
@@ -120,6 +123,13 @@ function App() {
                 : "None"}
               color="#e3b341"
             />
+            {data.gnn_used && data.total_nodes && data.gnn_nodes_evaluated && (
+              <StatCard
+                label="GNN Node Pruning"
+                value={`${data.gnn_nodes_evaluated.length} / ${data.total_nodes}`}
+                color="#a371f7"
+              />
+            )}
           </div>
 
           {/* Cycles */}
@@ -157,6 +167,10 @@ function App() {
               <strong style={{ color: "#e6edf3" }}>Bellman-Ford</strong> detects
               negative cycles in O(VE) time. If after V-1 relaxations we can
               still relax an edge, a negative cycle exists.
+              <br /><br />
+              <strong style={{ color: "#a371f7" }}>✨ GNN Heuristic Active:</strong> 
+              A Graph Neural Network predicts which nodes are likely in an arbitrage cycle, 
+              reducing the search space for Bellman-Ford and providing a massive speedup!
             </p>
           </div>
         </>
