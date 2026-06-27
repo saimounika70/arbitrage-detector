@@ -6,7 +6,7 @@
 
 A real-time currency arbitrage detection system that uses a **Graph Neural Network (GNN)** heuristic to intelligently prune the search space of the O(VE) Bellman-Ford algorithm, finding profitable FX trading cycles at a fraction of the computational cost.
 
-## 🚀 The "Resume-Worthy" Feature: GNN Algorithmic Speedup
+## 🚀 GNN Algorithmic Speedup
 
 Traditional arbitrage detection treats currency exchange rates as a complete, weighted directed graph, running the Bellman-Ford algorithm from every single node to find negative cycles (which represent risk-free profit). This has a time complexity of `O(V * VE)`, which scales poorly as the number of monitored currencies grows.
 
